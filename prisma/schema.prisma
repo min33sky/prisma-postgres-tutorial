@@ -21,7 +21,7 @@ model User {
   posts    Post[]
   likes    Like[]
 
-  @@index([email, nickname])
+  @@index([email]) // nickname은 변경하는 경우가 많으므로 index를 걸지 않는다.
 }
 
 enum Provider {
