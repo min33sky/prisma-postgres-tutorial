@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "agree" DROP NOT NULL,
+ALTER COLUMN "agree" SET DEFAULT false;
