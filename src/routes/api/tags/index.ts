@@ -15,6 +15,25 @@ const tagsRoute: FastifyPluginAsync = async (fastify) => {
       throw error;
     }
   });
+
+  fastify.get('/agr', async (request, reply) => {
+    //? 이 앱에선 별 의미 없는 쿼리임 ㅋㅋ
+    try {
+      const agr = prisma.tag.aggregate({
+        _count: true,
+        _avg: {
+          id: true,
+        },
+        _max: {
+          id: true,
+        },
+      });
+
+      return agr;
+    } catch (error) {
+      throw error;
+    }
+  });
 };
 
 export default tagsRoute;

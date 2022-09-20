@@ -68,7 +68,11 @@ const postsRoute: FastifyPluginAsync = async (fastify) => {
         data: {
           content,
           thumbnail,
-          authorId,
+          author: {
+            connect: {
+              id: authorId,
+            },
+          },
           postTags: {
             create:
               tags?.map((tagName) => ({
