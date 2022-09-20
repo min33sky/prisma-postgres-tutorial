@@ -1,10 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
-import postsRoutes from './posts';
+import postsRoute from './posts';
+import tagsRoute from './tags';
 import usersRoute from './users';
 
 const api: FastifyPluginAsync = async (fastify) => {
   fastify.register(usersRoute, { prefix: '/users' });
-  fastify.register(postsRoutes, { prefix: '/posts' });
+  fastify.register(postsRoute, { prefix: '/posts' });
+  fastify.register(tagsRoute, { prefix: '/tags' });
 };
 
 export default api;

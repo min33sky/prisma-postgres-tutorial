@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import { prisma } from '../../../lib/db';
 
-const postsRoutes: FastifyPluginAsync = async (fastify) => {
+const postsRoute: FastifyPluginAsync = async (fastify) => {
   fastify.get<{ Querystring: { page?: string; limit?: string } }>(
     '/',
     async (request, reply) => {
@@ -28,6 +28,15 @@ const postsRoutes: FastifyPluginAsync = async (fastify) => {
                   nickname: true,
                 },
               },
+              postTags: {
+                select: {
+                  tag: {
+                    select: {
+                      content: true,
+                    },
+                  },
+                },
+              },
             },
           }),
         ]);
@@ -42,6 +51,46 @@ const postsRoutes: FastifyPluginAsync = async (fastify) => {
       }
     },
   );
+
+  fastify.post<{
+    Body: {
+      content: string;
+      thumbnail: string;
+      authorId: number;
+      tags?: string[];
+    };
+  }>('/', async (request, reply) => {
+    const { content, thumbnail, authorId, tags } = request.body;
+    console.log(content, thumbnail, authorId, tags);
+
+    try {
+      const newPost = await prisma.post.create({
+        data: {
+          content,
+          thumbnail,
+          authorId,
+          postTags: {
+            create:
+              tags?.map((tagName) => ({
+                tag: {
+                  connectOrCreate: {
+                    where: {
+                      content: tagName,
+                    },
+                    create: {
+                      content: tagName,
+                    },
+                  },
+                },
+              })) || [],
+          },
+        },
+      });
+      return newPost;
+    } catch (error) {
+      throw error;
+    }
+  });
 
   fastify.post<{
     Body: {
@@ -98,4 +147,4 @@ const postsRoutes: FastifyPluginAsync = async (fastify) => {
   });
 };
 
-export default postsRoutes;
+export default postsRoute;
